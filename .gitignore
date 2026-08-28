@@ -1,0 +1,23 @@
+﻿# Dependencies
+node_modules/
+
+# Multi-browser packaging outputs
+dist-chrome/
+dist-firefox/
+
+# Release Archives
+*.zip
+*.xpi
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment & Local Configuration
+.env
+.env.local
+
+# OS Generated Files
+.DS_Store
+Thumbs.db
+Desktop.ini

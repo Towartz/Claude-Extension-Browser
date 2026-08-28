@@ -1,0 +1,31 @@
+{
+  "name": "claude-account-switcher",
+  "version": "0.3.0",
+  "private": true,
+  "description": "Switch Claude.ai accounts in one click. Manage multi-account sessions, track limits with a usage bar, and organize saved profiles.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build && node scripts/build-cross-browser.js",
+    "build:chrome": "tsc && vite build && node scripts/build-cross-browser.js",
+    "build:firefox": "tsc && vite build && node scripts/build-cross-browser.js",
+    "typecheck": "tsc --noEmit",
+    "test": "node scripts/verify-cross-browser.js",
+    "package": "npm run build && node scripts/package-all.js",
+    "package:all": "npm run build && node scripts/package-all.js"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.300",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "archiver": "^7.0.1",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.7"
+  }
+}
