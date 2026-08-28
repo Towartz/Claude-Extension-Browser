@@ -6,34 +6,46 @@ export function sanitizeName(name: string): string {
   return name.trim().slice(0, 40);
 }
 
-export function maskEmail(email: string | undefined | null): string {
+export function maskEmailLight(email: string | undefined | null): string {
   if (!email || typeof email !== 'string') return '';
   const trimmed = email.trim();
   const atIndex = trimmed.indexOf('@');
   if (atIndex <= 0 || atIndex === trimmed.length - 1) {
-    if (trimmed.length <= 3) return trimmed;
-    return trimmed.slice(0, 1) + '***' + trimmed.slice(-1);
+    if (trimmed.length <= 4) return trimmed;
+    const keep = Math.max(1, Math.floor(trimmed.length / 3));
+    return trimmed.slice(0, keep) + '***' + trimmed.slice(-keep);
   }
 
   const localPart = trimmed.slice(0, atIndex);
   const domainPart = trimmed.slice(atIndex + 1);
 
   let maskedLocal = '';
-  if (localPart.length <= 2) {
-    maskedLocal = localPart[0] + '*';
-  } else if (localPart.length <= 4) {
-    maskedLocal = localPart[0] + '**' + localPart.slice(-1);
+  const len = localPart.length;
+
+  if (len <= 3) {
+    maskedLocal = len <= 2 ? localPart[0] + '*' : localPart[0] + '*' + localPart.slice(-1);
+  } else if (len <= 6) {
+    const prefixLen = Math.floor(len / 2);
+    const suffixLen = len - prefixLen - 1;
+    maskedLocal = localPart.slice(0, prefixLen) + '*' + localPart.slice(len - suffixLen);
   } else {
-    maskedLocal = localPart.slice(0, 2) + '***' + localPart.slice(-2);
+    const prefixLen = Math.max(3, Math.floor(len * 0.42));
+    const suffixLen = Math.max(3, Math.floor(len * 0.38));
+    const maskedChars = '*'.repeat(Math.min(3, Math.max(2, len - prefixLen - suffixLen)));
+    maskedLocal = localPart.slice(0, prefixLen) + maskedChars + localPart.slice(len - suffixLen);
   }
 
   return `${maskedLocal}@${domainPart}`;
 }
 
+export function maskEmail(email: string | undefined | null): string {
+  return maskEmailLight(email);
+}
+
 export function maskIfEmail(text: string | undefined | null): string {
   if (!text || typeof text !== 'string') return '';
   if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(text.trim())) {
-    return maskEmail(text);
+    return maskEmailLight(text);
   }
   return text;
 }

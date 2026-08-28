@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Profile } from '../../types';
-import { formatRelativeDate, formatUsageStatus, maskEmail, maskIfEmail } from '../../utils';
+import { formatRelativeDate, formatUsageStatus, maskEmailLight } from '../../utils';
+import { Icon } from './Icons';
 
 export interface ProfileItemProps {
   profile: Profile;
@@ -26,6 +27,7 @@ export const ProfileItem: React.FC<ProfileItemProps> = React.memo(({
   stale
 }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [isEmailRevealed, setIsEmailRevealed] = useState(false);
   const [nameInput, setNameInput] = useState(profile.name);
   const [renameError, setRenameError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -115,7 +117,7 @@ export const ProfileItem: React.FC<ProfileItemProps> = React.memo(({
             disabled={disabled}
             title="Rename profile"
           >
-            <span className="pn" title={profile.name}>{maskIfEmail(profile.name)}</span>
+            <span className="pn" title={profile.name}>{profile.name}</span>
             <svg
               className="ei"
               viewBox="0 0 12 12"
@@ -132,9 +134,18 @@ export const ProfileItem: React.FC<ProfileItemProps> = React.memo(({
         <div className="meta">
           {profile.email && (
             <>
-              <span className="em" title={profile.email}>
-                {maskEmail(profile.email)}
-              </span>
+              <button
+                type="button"
+                className="email-privacy-btn"
+                onClick={() => setIsEmailRevealed((prev) => !prev)}
+                title={isEmailRevealed ? `Mask email (${maskEmailLight(profile.email)})` : `Reveal full email (${profile.email})`}
+                aria-label={isEmailRevealed ? 'Mask email' : 'Reveal full email'}
+              >
+                <span className="em">
+                  {isEmailRevealed ? profile.email : maskEmailLight(profile.email)}
+                </span>
+                <Icon name={isEmailRevealed ? 'eye-off' : 'eye'} size={11} className="email-eye-icon" />
+              </button>
               <span aria-hidden="true">·</span>
             </>
           )}

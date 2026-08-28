@@ -1874,6 +1874,36 @@ h2 {
   to { opacity: 1; transform: scale(1); }
 }
 
+.email-privacy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  font-size: 11px;
+  color: var(--muted);
+  cursor: pointer;
+  border-radius: 3px;
+  transition: color 0.15s ease, opacity 0.15s ease;
+}
+
+.email-privacy-btn:hover {
+  color: var(--text);
+}
+
+.email-privacy-btn .email-eye-icon {
+  opacity: 0.5;
+  transition: opacity 0.15s ease, color 0.15s ease;
+}
+
+.email-privacy-btn:hover .email-eye-icon {
+  opacity: 1;
+  color: var(--accent);
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     scroll-behavior: auto !important;

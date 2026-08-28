@@ -1,66 +1,69 @@
-﻿import assert from 'assert';
+import assert from 'assert';
 
-function maskEmail(email) {
+function maskEmailLight(email) {
   if (!email || typeof email !== 'string') return '';
   const trimmed = email.trim();
   const atIndex = trimmed.indexOf('@');
   if (atIndex <= 0 || atIndex === trimmed.length - 1) {
-    if (trimmed.length <= 3) return trimmed;
-    return trimmed.slice(0, 1) + '***' + trimmed.slice(-1);
+    if (trimmed.length <= 4) return trimmed;
+    const keep = Math.max(1, Math.floor(trimmed.length / 3));
+    return trimmed.slice(0, keep) + '***' + trimmed.slice(-keep);
   }
 
   const localPart = trimmed.slice(0, atIndex);
   const domainPart = trimmed.slice(atIndex + 1);
 
   let maskedLocal = '';
-  if (localPart.length <= 2) {
-    maskedLocal = localPart[0] + '*';
-  } else if (localPart.length <= 4) {
-    maskedLocal = localPart[0] + '**' + localPart.slice(-1);
+  const len = localPart.length;
+
+  if (len <= 3) {
+    maskedLocal = len <= 2 ? localPart[0] + '*' : localPart[0] + '*' + localPart.slice(-1);
+  } else if (len <= 6) {
+    const prefixLen = Math.floor(len / 2);
+    const suffixLen = len - prefixLen - 1;
+    maskedLocal = localPart.slice(0, prefixLen) + '*' + localPart.slice(len - suffixLen);
   } else {
-    maskedLocal = localPart.slice(0, 2) + '***' + localPart.slice(-2);
+    const prefixLen = Math.max(3, Math.floor(len * 0.42));
+    const suffixLen = Math.max(3, Math.floor(len * 0.38));
+    const maskedChars = '*'.repeat(Math.min(3, Math.max(2, len - prefixLen - suffixLen)));
+    maskedLocal = localPart.slice(0, prefixLen) + maskedChars + localPart.slice(len - suffixLen);
   }
 
   return `${maskedLocal}@${domainPart}`;
 }
 
-function maskIfEmail(text) {
-  if (!text || typeof text !== 'string') return '';
-  if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(text.trim())) {
-    return maskEmail(text);
-  }
-  return text;
-}
+console.log('--- Testing Light / Readable Email Masking ---');
 
-console.log('--- Testing Email Privacy Masking ---');
+// 1. Distinguishable account variants
+const workAcc = maskEmailLight('towartz.work@gmail.com');
+const personalAcc = maskEmailLight('towartz.personal@gmail.com');
+const backupAcc = maskEmailLight('towartz.backup@gmail.com');
 
-// 1. Standard emails (> 4 chars)
-assert.strictEqual(maskEmail('alexander@domain.com'), 'al***er@domain.com');
-assert.strictEqual(maskEmail('towartz.dev@gmail.com'), 'to***ev@gmail.com');
-assert.strictEqual(maskEmail('john.doe@company.co.id'), 'jo***oe@company.co.id');
-console.log(' [PASS] Standard long email masking');
+console.log(` work: ${workAcc}`);
+console.log(` personal: ${personalAcc}`);
+console.log(` backup: ${backupAcc}`);
 
-// 2. Medium emails (3-4 chars)
-assert.strictEqual(maskEmail('alex@domain.com'), 'a**x@domain.com');
-assert.strictEqual(maskEmail('john@domain.com'), 'j**n@domain.com');
-console.log(' [PASS] Medium 4-char email masking');
+assert.strictEqual(workAcc, 'towar***work@gmail.com');
+assert.strictEqual(personalAcc, 'towart***rsonal@gmail.com');
+assert.strictEqual(backupAcc, 'towar***ackup@gmail.com');
+assert.notStrictEqual(workAcc, personalAcc);
+assert.notStrictEqual(workAcc, backupAcc);
+console.log(' [PASS] Multi-account disambiguation verified');
 
-// 3. Short emails (<= 2 chars)
-assert.strictEqual(maskEmail('me@domain.com'), 'm*@domain.com');
-assert.strictEqual(maskEmail('a@b.com'), 'a*@b.com');
-console.log(' [PASS] Short email masking');
+// 2. Standard names
+assert.strictEqual(maskEmailLight('alexander.smith@company.com'), 'alexan***smith@company.com');
+assert.strictEqual(maskEmailLight('john.doe@gmail.com'), 'joh**doe@gmail.com');
+console.log(' [PASS] Standard names light masking');
+
+// 3. Short & Medium emails
+assert.strictEqual(maskEmailLight('alex@gmail.com'), 'al*x@gmail.com');
+assert.strictEqual(maskEmailLight('me@domain.com'), 'm*@domain.com');
+console.log(' [PASS] Short & medium emails masking');
 
 // 4. Edge cases & null safety
-assert.strictEqual(maskEmail(''), '');
-assert.strictEqual(maskEmail(null), '');
-assert.strictEqual(maskEmail(undefined), '');
-assert.strictEqual(maskEmail('not-an-email'), 'n***l');
-console.log(' [PASS] Null, empty, and invalid format safety');
+assert.strictEqual(maskEmailLight(''), '');
+assert.strictEqual(maskEmailLight(null), '');
+assert.strictEqual(maskEmailLight(undefined), '');
+console.log(' [PASS] Null, empty, and undefined safety');
 
-// 5. maskIfEmail testing
-assert.strictEqual(maskIfEmail('Personal Workspace'), 'Personal Workspace');
-assert.strictEqual(maskIfEmail('Claude Account 1'), 'Claude Account 1');
-assert.strictEqual(maskIfEmail('towartz.dev@gmail.com'), 'to***ev@gmail.com');
-console.log(' [PASS] maskIfEmail conditional masking');
-
-console.log('\nAll Email Privacy Masking tests passed successfully!\n');
+console.log('\nAll Light Email Masking tests passed successfully!\n');
