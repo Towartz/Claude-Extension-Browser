@@ -1,6 +1,8 @@
 ﻿# Claude Account Switcher (Cross-Browser Extension)
 
 ![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue.svg)
+![Version](https://img.shields.io/badge/version-0.3.1-green.svg)
+![License](https://img.shields.io/badge/license-MIT-purple.svg)
 ![React 19](https://img.shields.io/badge/React-19-61dafb.svg)
 ![TypeScript 5](https://img.shields.io/badge/TypeScript-5.7-3178c6.svg)
 ![Chrome](https://img.shields.io/badge/Chrome-Supported-4285F4.svg)
@@ -8,14 +10,17 @@
 ![Edge](https://img.shields.io/badge/Edge-Supported-0078D7.svg)
 ![Brave](https://img.shields.io/badge/Brave-Supported-FB542B.svg)
 
-A cross-browser extension (Manifest V3) for switching Claude.ai accounts in one click, managing multi-account sessions, predicting peak capacity hours, tracking limits with a live usage bar, and organizing saved profiles with AES-GCM-256 encrypted backups.
+A high-performance, secure cross-browser extension (Manifest V3) for switching Claude.ai accounts in one click, managing multi-account sessions, predicting peak capacity hours, tracking limits with a live usage bar, protecting local session data against infostealers with at-rest AES-GCM-256 encryption, and organizing saved profiles.
 
 ---
 
 ## Features
 
 - **Instant Account Switching**: Switch between unlimited Claude accounts with zero page lag.
-- **Unsaved Session Protection**: Confirms and warns before switching away from an unsaved active profile.
+- **At-Rest AES-GCM-256 Storage Encryption (Anti-Stealer)**: All session keys and cookie payloads stored on disk are encrypted using Web Crypto AES-GCM-256 with 96-bit random IVs. Raw session tokens never exist as plaintext in LevelDB database files on disk, protecting credentials from local infostealer malware.
+- **Light / Readable Email Privacy Masking**: Privacy-preserving email masking (e.g. `towar***work@gmail.com` vs `towart***rsonal@gmail.com`) that keeps distinguishing suffixes visible so similar accounts are easy to recognize.
+- **Interactive Eye Toggle**: Clickable eye icon on every account email allows one-click toggling between masked and unmasked view.
+- **Unsaved Session Protection**: Confirms and warns before switching away from an active session that has not yet been saved to your profile list.
 - **Real-Time Usage Dashboard**:
   - 5-hour session progress gauge with live countdown timer.
   - 7-day weekly cap bar and toolbar ring preview.
@@ -24,33 +29,52 @@ A cross-browser extension (Manifest V3) for switching Claude.ai accounts in one 
 - **Predictive Peak Traffic Forecast**:
   - Live 1-second real-time countdown timer.
   - Multi-scenario global load index (Core Weekday Peak, Afternoon, Off-Peak Night, and Weekend Leisure).
-  - Visual 24-Hour Local Timeline Bar with color-coded traffic slots and live local time indicator.
-  - Converts Claude global peak schedule (5:00 AM - 1:00 PM PT) to user local timezone.
+  - Visual 24-Hour Local Timeline Bar with color-coded traffic slots and live local time indicator needle.
+  - Automatic time zone conversion to user local schedule.
 - **In-Page Progress Bar**: Injects a clean, color-coded usage progress bar directly above the disclaimer banner on claude.ai.
 - **Encrypted Backup and Transfer**:
-  - Export profiles encrypted with PBKDF2-SHA256 (210,000 iterations) + AES-GCM-256 with custom passphrase.
+  - Export profiles encrypted with PBKDF2-SHA256 (210,000 iterations) + AES-GCM-256 with custom user passphrase.
   - Drag-and-drop JSON import.
 - **Adaptive Theme**: Auto (System OS), Light, and Dark mode support.
-- **Local-First and Zero Analytics**: Session tokens and cookies never leave your browser storage.
+- **Zero Telemetry**: All cookies and operations stay strictly on your local device.
 
 ---
 
-## Installation Guide
+## Platform Installation Guides
 
-### Google Chrome / Brave / Microsoft Edge / Opera
-1. Download or clone this repository.
-2. Run `npm install` and `npm run package`.
-3. Open your browser and navigate to `chrome://extensions/` (or `brave://extensions/`, `edge://extensions/`).
-4. Enable Developer mode in the top right corner.
-5. Click Load unpacked and select the `dist/` (or `dist-chrome/`) folder.
-6. Open [claude.ai](https://claude.ai/) and click the extension icon to manage accounts.
+### Google Chrome
+1. Download `claude-account-switcher-chrome-v0.3.1.zip` from [Releases](https://github.com/Towartz/Claude-Extension-Browser/releases).
+2. Extract the ZIP archive to a folder on your computer.
+3. Open Google Chrome and navigate to `chrome://extensions/`.
+4. Enable the **Developer mode** toggle in the top right corner.
+5. Click **Load unpacked** in the top left corner.
+6. Select the extracted directory.
+7. Open [claude.ai](https://claude.ai/) and click the extension icon to manage your accounts.
 
 ### Mozilla Firefox
-1. Run `npm install` and `npm run package`.
+1. Download `claude-account-switcher-firefox-v0.3.1.zip` or `claude-account-switcher-firefox-v0.3.1.xpi` from [Releases](https://github.com/Towartz/Claude-Extension-Browser/releases).
 2. Open Firefox and navigate to `about:debugging#/runtime/this-firefox`.
-3. Click Load Temporary Add-on...
-4. Select the `dist-firefox/manifest.json` file (or select `claude-account-switcher-firefox-v0.3.0.zip`).
+3. Click **Load Temporary Add-on...**.
+4. Select the downloaded `.zip` or `.xpi` file (or `dist-firefox/manifest.json` if building from source).
 5. The extension is now active on [claude.ai](https://claude.ai/).
+
+### Brave Browser
+1. Download and extract `claude-account-switcher-chrome-v0.3.1.zip`.
+2. Open Brave and navigate to `brave://extensions/`.
+3. Enable **Developer mode** in the top right corner.
+4. Click **Load unpacked** and select the extracted folder.
+5. The extension works seamlessly alongside Brave Shields.
+
+### Microsoft Edge
+1. Download and extract `claude-account-switcher-chrome-v0.3.1.zip`.
+2. Open Microsoft Edge and navigate to `edge://extensions/`.
+3. Turn on the **Developer mode** toggle on the left sidebar.
+4. Click **Load unpacked** and select the extracted folder.
+
+### Opera / Vivaldi
+1. Download and extract `claude-account-switcher-chrome-v0.3.1.zip`.
+2. Open your browser and go to `opera://extensions/` or `vivaldi://extensions/`.
+3. Enable **Developer mode** and click **Load unpacked**.
 
 ---
 
@@ -76,36 +100,13 @@ npm test
 ### Build Artifacts Output
 - `dist/` and `dist-chrome/` - Chrome / Chromium MV3 unpacked directory
 - `dist-firefox/` - Firefox Gecko MV3 unpacked directory
-- `claude-account-switcher-chrome-v0.3.0.zip` - Chrome release archive
-- `claude-account-switcher-firefox-v0.3.0.zip` - Firefox release archive
-- `claude-account-switcher-firefox-v0.3.0.xpi` - Firefox XPI package
-
----
-
-## Architecture and Project Structure
-
-```
-├── dist-chrome/              # Chrome / Chromium target (MV3)
-├── dist-firefox/             # Firefox target (Gecko MV3)
-├── src/                      # TypeScript / React 19 source
-│   ├── background/           # Background Service Worker
-│   ├── content/              # Injected Content Script (claude.ai)
-│   ├── popup/                # React 19 SPA Popup UI
-│   │   ├── components/       # UI Components (PeakBanner, UsagePanel, ProfileList, etc.)
-│   │   ├── hooks/            # Custom Hooks (useProfiles, useDashboard, useSettings)
-│   │   ├── App.tsx           # Main Shell
-│   │   └── index.css         # High-contrast adaptive styling
-│   ├── types/                # TypeScript Interfaces and Models
-│   └── utils/                # Crypto, Usage, Cookies, Profiles utilities
-├── scripts/                  # Cross-Browser Build and Packaging Scripts
-│   ├── build-cross-browser.js
-│   ├── package-all.js
-│   └── verify-cross-browser.js
-└── package.json
-```
+- `releases/claude-account-switcher-chrome-v0.3.1.zip` - Chrome release archive
+- `releases/claude-account-switcher-firefox-v0.3.1.zip` - Firefox release archive
+- `releases/claude-account-switcher-firefox-v0.3.1.xpi` - Firefox direct installable XPI package
+- `releases/claude-account-switcher-v0.3.1.zip` - Universal release package
 
 ---
 
 ## License
 
-MIT License.
+MIT License. Copyright (c) 2026 Towartz.

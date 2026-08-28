@@ -1,6 +1,6 @@
 {
   "name": "claude-account-switcher",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": true,
   "description": "Switch Claude.ai accounts in one click. Manage multi-account sessions, track limits with a usage bar, and organize saved profiles.",
   "license": "MIT",
