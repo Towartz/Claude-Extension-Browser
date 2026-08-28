@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Profile } from '../../types';
-import { formatRelativeDate, formatUsageStatus } from '../../utils';
+import { formatRelativeDate, formatUsageStatus, maskEmail, maskIfEmail } from '../../utils';
 
 export interface ProfileItemProps {
   profile: Profile;
@@ -115,7 +115,7 @@ export const ProfileItem: React.FC<ProfileItemProps> = React.memo(({
             disabled={disabled}
             title="Rename profile"
           >
-            <span className="pn" title={profile.name}>{profile.name}</span>
+            <span className="pn" title={profile.name}>{maskIfEmail(profile.name)}</span>
             <svg
               className="ei"
               viewBox="0 0 12 12"
@@ -133,7 +133,7 @@ export const ProfileItem: React.FC<ProfileItemProps> = React.memo(({
           {profile.email && (
             <>
               <span className="em" title={profile.email}>
-                {profile.email}
+                {maskEmail(profile.email)}
               </span>
               <span aria-hidden="true">·</span>
             </>

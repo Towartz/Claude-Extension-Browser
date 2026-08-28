@@ -6,6 +6,38 @@ export function sanitizeName(name: string): string {
   return name.trim().slice(0, 40);
 }
 
+export function maskEmail(email: string | undefined | null): string {
+  if (!email || typeof email !== 'string') return '';
+  const trimmed = email.trim();
+  const atIndex = trimmed.indexOf('@');
+  if (atIndex <= 0 || atIndex === trimmed.length - 1) {
+    if (trimmed.length <= 3) return trimmed;
+    return trimmed.slice(0, 1) + '***' + trimmed.slice(-1);
+  }
+
+  const localPart = trimmed.slice(0, atIndex);
+  const domainPart = trimmed.slice(atIndex + 1);
+
+  let maskedLocal = '';
+  if (localPart.length <= 2) {
+    maskedLocal = localPart[0] + '*';
+  } else if (localPart.length <= 4) {
+    maskedLocal = localPart[0] + '**' + localPart.slice(-1);
+  } else {
+    maskedLocal = localPart.slice(0, 2) + '***' + localPart.slice(-2);
+  }
+
+  return `${maskedLocal}@${domainPart}`;
+}
+
+export function maskIfEmail(text: string | undefined | null): string {
+  if (!text || typeof text !== 'string') return '';
+  if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(text.trim())) {
+    return maskEmail(text);
+  }
+  return text;
+}
+
 export function isDuplicateName(
   profiles: Record<string, Profile>,
   name: string,

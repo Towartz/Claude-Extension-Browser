@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { HeatmapCell, ModelUsage, UsageDashboard, UsageSession } from '../../types';
-import { formatResetTime } from '../../utils';
+import { formatResetTime, maskIfEmail } from '../../utils';
 import { Icon } from './Icons';
 
 const STORAGE_COLLAPSED_KEY = 'claude_usage_panel_collapsed';
@@ -156,7 +156,7 @@ export const UsagePanel: React.FC<UsagePanelProps> = ({
             <p className="eyebrow">Claude Account Switcher</p>
             {activeProfileName !== undefined && (
               <span className="active-account-badge" title={`Active account: ${activeProfileName}`}>
-                {activeProfileName}
+                {maskIfEmail(activeProfileName)}
               </span>
             )}
           </div>

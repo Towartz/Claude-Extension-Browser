@@ -12,6 +12,7 @@ import { useDashboard } from './hooks/useDashboard';
 import { useProfiles } from './hooks/useProfiles';
 import { useSettings } from './hooks/useSettings';
 import { Profile } from '../types';
+import { maskIfEmail } from '../utils';
 
 async function navigateToClaude(): Promise<void> {
   if (typeof chrome !== 'undefined' && chrome.tabs !== undefined) {
@@ -256,7 +257,7 @@ export const App: React.FC = () => {
               You are currently on an <strong>unsaved session</strong>.
               <br />
               <br />
-              Switching to <strong>"{profilePendingSwitch.name}"</strong> will overwrite your current active cookies and log you out of this session unless you save it first.
+              Switching to <strong>"{maskIfEmail(profilePendingSwitch.name)}"</strong> will overwrite your current active cookies and log you out of this session unless you save it first.
             </span>
           }
           confirmLabel="Switch anyway"
@@ -276,7 +277,7 @@ export const App: React.FC = () => {
           title="Delete Profile?"
           message={
             <span>
-              Are you sure you want to delete profile <strong>"{profilePendingDelete.name}"</strong>?
+              Are you sure you want to delete profile <strong>"{maskIfEmail(profilePendingDelete.name)}"</strong>?
               <br />
               Stored session cookies for this account will be permanently removed.
             </span>
