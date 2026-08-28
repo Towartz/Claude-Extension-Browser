@@ -1,4 +1,4 @@
-﻿import fs from 'fs';
+import fs from 'fs';
 import path from 'path';
 import archiver from 'archiver';
 import { fileURLToPath } from 'url';
@@ -38,22 +38,27 @@ function createZip(sourceDir, zipPath, label) {
   });
 }
 
+const releasesDir = path.resolve(rootDir, 'releases');
+if (!fs.existsSync(releasesDir)) {
+  fs.mkdirSync(releasesDir, { recursive: true });
+}
+
 async function packageAll() {
   console.log(`\n--- Packaging Cross-Browser Releases (v${version}) ---`);
   
   // 1. Chrome / Chromium Package
-  const chromeZip = path.resolve(rootDir, `claude-account-switcher-chrome-v${version}.zip`);
-  const legacyZip = path.resolve(rootDir, `claude-account-switcher-v${version}.zip`);
+  const chromeZip = path.resolve(releasesDir, `claude-account-switcher-chrome-v${version}.zip`);
+  const legacyZip = path.resolve(releasesDir, `claude-account-switcher-v${version}.zip`);
   await createZip(distChromeDir, chromeZip, 'Chrome (MV3)');
   await createZip(distChromeDir, legacyZip, 'Universal Chrome Release');
 
   // 2. Firefox Gecko MV3 Package (.zip and .xpi)
-  const firefoxZip = path.resolve(rootDir, `claude-account-switcher-firefox-v${version}.zip`);
-  const firefoxXpi = path.resolve(rootDir, `claude-account-switcher-firefox-v${version}.xpi`);
+  const firefoxZip = path.resolve(releasesDir, `claude-account-switcher-firefox-v${version}.zip`);
+  const firefoxXpi = path.resolve(releasesDir, `claude-account-switcher-firefox-v${version}.xpi`);
   await createZip(distFirefoxDir, firefoxZip, 'Firefox (Gecko MV3 .zip)');
   await createZip(distFirefoxDir, firefoxXpi, 'Firefox (Gecko MV3 .xpi)');
 
-  console.log(`\nAll cross-browser packages generated successfully!`);
+  console.log(`\nAll cross-browser packages generated in releases/ successfully!`);
 }
 
 packageAll().catch((err) => {

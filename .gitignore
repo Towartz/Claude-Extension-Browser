@@ -1,9 +1,10 @@
-﻿# Dependencies
+# Dependencies
 node_modules/
 
 # Multi-browser packaging outputs
 dist-chrome/
 dist-firefox/
+releases/
 
 # Release Archives
 *.zip

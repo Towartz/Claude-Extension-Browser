@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-label="Claude Account Switcher icon">
+  <defs>
+    <clipPath id="icon-clip">
+      <rect width="128" height="128" rx="28"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="128" height="128" rx="28" fill="#f5f4ed"/>
+
+  <g clip-path="url(#icon-clip)">
+    <!-- Left user circle backdrop -->
+    <circle cx="46" cy="58" r="34" fill="#e8e2d6"/>
+    <!-- Right user circle backdrop -->
+    <circle cx="82" cy="58" r="34" fill="#d9d3c7"/>
+
+    <!-- Left user silhouette (terracotta) -->
+    <g fill="#c96442">
+      <circle cx="46" cy="44" r="13"/>
+      <path d="M25 80c2.5-13.5 10.5-20 21-20s18.5 6.5 21 20c.6 3-1.5 5.5-4.5 5.5h-33c-3 0-5.1-2.5-4.5-5.5Z"/>
+    </g>
+
+    <!-- Right user silhouette (charcoal) -->
+    <g fill="#30302e">
+      <circle cx="82" cy="44" r="13"/>
+      <path d="M61 80c2.5-13.5 10.5-20 21-20s18.5 6.5 21 20c.6 3-1.5 5.5-4.5 5.5h-33c-3 0-5.1-2.5-4.5-5.5Z"/>
+    </g>
+
+    <!-- Swap badge -->
+    <circle cx="100" cy="100" r="18" fill="#fff"/>
+    <circle cx="100" cy="100" r="17" fill="none" stroke="#e0ddd4" stroke-width="1.2"/>
+    <g fill="none" stroke="#30302e" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <!-- Top arrow: pointing right -->
+      <path d="M91 96h18"/>
+      <polyline points="105,92 109,96 105,100"/>
+      <!-- Bottom arrow: pointing left -->
+      <path d="M109 104H91"/>
+      <polyline points="95,100 91,104 95,108"/>
+    </g>
+  </g>
+</svg>
