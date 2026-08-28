@@ -18,6 +18,12 @@ export interface UsageSession {
   resetAt: string | null;
 }
 
+export interface EncryptedCookiePayload {
+  v: 1;
+  iv: string;
+  data: string;
+}
+
 export interface Profile {
   id: string;
   name: string;
@@ -28,6 +34,11 @@ export interface Profile {
   savedAt: number;
   lastChatUrl?: string;
   usage?: UsageSession;
+}
+
+export interface StoredProfile extends Omit<Profile, 'cookies'> {
+  cookies?: CookieData[];
+  encryptedCookies?: EncryptedCookiePayload;
 }
 
 export interface ModelUsage {

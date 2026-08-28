@@ -16,6 +16,8 @@ import {
   cleanCookie,
   cookieToDetails,
   cookieToSetDetails,
+  decryptProfilesFromStorage,
+  encryptProfilesForStorage,
   formatDashboard,
   generateModels,
   generateUniqueName,
@@ -45,11 +47,20 @@ const DEFAULT_SETTINGS: Settings = {
 
 async function getStoredProfiles(): Promise<Record<string, Profile>> {
   const result = await chrome.storage.local.get(STORAGE_PROFILES);
-  return (result[STORAGE_PROFILES] as Record<string, Profile>) ?? {};
+  const raw = result[STORAGE_PROFILES] as Record<string, any> | undefined;
+  if (!raw || typeof raw !== 'object') return {};
+
+  const { profiles, migrated } = await decryptProfilesFromStorage(raw);
+  if (migrated) {
+    // If legacy unencrypted cookies were found on disk, immediately re-save with encryption
+    setStoredProfiles(profiles).catch(() => {});
+  }
+  return profiles;
 }
 
 async function setStoredProfiles(profiles: Record<string, Profile>): Promise<void> {
-  await chrome.storage.local.set({ [STORAGE_PROFILES]: profiles });
+  const encrypted = await encryptProfilesForStorage(profiles);
+  await chrome.storage.local.set({ [STORAGE_PROFILES]: encrypted });
 }
 
 async function getStoredDashboard(): Promise<UsageDashboard | undefined> {
