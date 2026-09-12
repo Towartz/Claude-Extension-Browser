@@ -18,8 +18,8 @@ export function sendBackgroundMessage<T = unknown>(message: ExtensionMessage): P
       completed = true;
 
       const lastError = chrome.runtime.lastError;
-      if (lastError !== undefined) {
-        reject(new Error(sanitizeErrorMessage(lastError.message)));
+      if (lastError) {
+        reject(new Error(sanitizeErrorMessage(lastError?.message)));
         return;
       }
 

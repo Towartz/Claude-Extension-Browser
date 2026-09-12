@@ -313,7 +313,7 @@ export const TransferPanel: React.FC<TransferPanelProps> = ({
             disabled={loading || isBusy}
             onClick={handleTriggerFileInput}
           >
-            {isImporting ? 'Importing…' : isFirefox() && isPopupView() ? 'Browse File (Tab)' : 'Import Profiles'}
+            {isImporting ? 'Importing…' : 'Import Profiles'}
           </button>
 
           <button
