@@ -131,68 +131,88 @@ export function useProfiles() {
     []
   );
 
-  const exportEncryptedProfiles = useCallback(async (): Promise<boolean> => {
-    setBusyState('exporting');
-    setError(null);
-    try {
-      const passphrase = window.prompt(
-        'Create a passphrase for this encrypted profiles backup. You will need it to import the file.'
-      );
-      if (passphrase === null) return false;
-      if (passphrase.length < 8) {
-        throw new Error('Use at least 8 characters for the backup passphrase.');
+  const exportEncryptedProfiles = useCallback(
+    async (passphrase: string): Promise<boolean> => {
+      setBusyState('exporting');
+      setError(null);
+      try {
+        if (!passphrase || passphrase.length < 8) {
+          throw new Error('Use at least 8 characters for the backup passphrase.');
+        }
+
+        const plainExport = exportProfiles(profiles);
+        const encryptedExport = await encryptProfiles(plainExport, passphrase);
+
+        const blob = new Blob([`${JSON.stringify(encryptedExport, null, 2)}\n`], {
+          type: 'application/json'
+        });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `claude-account-switcher-profiles-encrypted-${new Date().toISOString().slice(0, 10)}.json`;
+        document.body.append(link);
+        link.click();
+        link.remove();
+        // Delay revocation to prevent Firefox from aborting before reading blob
+        setTimeout(() => {
+          URL.revokeObjectURL(url);
+        }, 60000);
+        return true;
+      } catch (err) {
+        setError(getErrorMessage(err, 'Failed to export profiles'));
+        throw err;
+      } finally {
+        setBusyState('idle');
       }
+    },
+    [profiles]
+  );
 
-      const plainExport = exportProfiles(profiles);
-      const encryptedExport = await encryptProfiles(plainExport, passphrase);
+  const importProfilesData = useCallback(
+    async (fileOrText: File | string, passphrase?: string): Promise<boolean> => {
+      setBusyState('importing');
+      setError(null);
+      try {
+        const text = typeof fileOrText === 'string' ? fileOrText.trim() : await fileOrText.text();
+        if (!text) {
+          throw new Error('No content provided for import.');
+        }
 
-      const blob = new Blob([`${JSON.stringify(encryptedExport, null, 2)}\n`], {
-        type: 'application/json'
-      });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `claude-account-switcher-profiles-encrypted-${new Date().toISOString().slice(0, 10)}.json`;
-      document.body.append(link);
-      link.click();
-      link.remove();
-      URL.revokeObjectURL(url);
-      return true;
-    } catch (err) {
-      setError(getErrorMessage(err, 'Failed to export profiles'));
-      throw err;
-    } finally {
-      setBusyState('idle');
-    }
-  }, [profiles]);
+        let parsed: unknown;
+        try {
+          parsed = JSON.parse(text);
+        } catch {
+          throw new SyntaxError('Choose a valid profiles JSON file or paste valid JSON.');
+        }
 
-  const importProfilesFile = useCallback(async (file: File): Promise<boolean> => {
-    setBusyState('importing');
-    setError(null);
-    try {
-      const text = await file.text();
-      let parsed = JSON.parse(text);
+        if (isEncryptedPayload(parsed)) {
+          if (!passphrase) {
+            throw new Error('Passphrase is required to decrypt this backup.');
+          }
+          parsed = await decryptProfiles(parsed, passphrase);
+        }
 
-      if (isEncryptedPayload(parsed)) {
-        const passphrase = window.prompt('Enter the passphrase for this encrypted profiles backup.');
-        if (passphrase === null) return false;
-        parsed = await decryptProfiles(parsed, passphrase);
+        const res = await sendBackgroundMessage<{ profiles: Record<string, Profile>; imported: number }>({
+          type: 'IMPORT_PROFILES',
+          payload: parsed
+        });
+
+        setProfiles(res.profiles);
+        return true;
+      } catch (err) {
+        setError(
+          getErrorMessage(
+            err,
+            err instanceof SyntaxError ? 'Choose a valid profiles JSON file or paste valid JSON.' : 'Failed to import profiles'
+          )
+        );
+        throw err;
+      } finally {
+        setBusyState('idle');
       }
-
-      const res = await sendBackgroundMessage<{ profiles: Record<string, Profile>; imported: number }>({
-        type: 'IMPORT_PROFILES',
-        payload: parsed
-      });
-
-      setProfiles(res.profiles);
-      return true;
-    } catch (err) {
-      setError(getErrorMessage(err, err instanceof SyntaxError ? 'Choose a valid profiles JSON file.' : 'Failed to import profiles'));
-      throw err;
-    } finally {
-      setBusyState('idle');
-    }
-  }, []);
+    },
+    []
+  );
 
   const clearCookies = useCallback(async () => {
     setBusyState('clearing');
@@ -219,7 +239,7 @@ export function useProfiles() {
     deleteProfile,
     rename,
     exportProfiles: exportEncryptedProfiles,
-    importProfiles: importProfilesFile,
+    importProfiles: importProfilesData,
     clearCookies,
     clearError: () => setError(null)
   };

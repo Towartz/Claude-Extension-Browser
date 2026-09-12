@@ -35,7 +35,30 @@ const TABS = [
 ] as const;
 
 export const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'profiles' | 'transfer'>('profiles');
+  const getInitialTab = (): 'profiles' | 'transfer' => {
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash;
+      const search = new URLSearchParams(window.location.search);
+      if (hash === '#transfer' || hash === '#import' || search.get('tab') === 'transfer') {
+        return 'transfer';
+      }
+    }
+    return 'profiles';
+  };
+
+  const [activeTab, setActiveTab] = useState<'profiles' | 'transfer'>(getInitialTab);
+
+  useEffect(() => {
+    function handleHashChange() {
+      const hash = window.location.hash;
+      const search = new URLSearchParams(window.location.search);
+      if (hash === '#transfer' || hash === '#import' || search.get('tab') === 'transfer') {
+        setActiveTab('transfer');
+      }
+    }
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
   const { isClaudeTab } = useClaudeTab();
   const profileHook = useProfiles();
   const { settings, updateSettings } = useSettings();

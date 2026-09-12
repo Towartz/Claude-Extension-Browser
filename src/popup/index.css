@@ -1904,6 +1904,315 @@ h2 {
   color: var(--accent);
 }
 
+/* Transfer panel header actions */
+.transfer-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.open-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 7px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.open-tab-btn:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+/* Firefox notice card */
+.firefox-notice-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 10px;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 9px;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: #9a3412;
+  margin-bottom: 8px;
+}
+
+.firefox-notice-icon {
+  flex: none;
+  margin-top: 1px;
+  color: #ea580c;
+}
+
+.firefox-notice-card p {
+  margin: 0;
+  flex: 1;
+}
+
+.firefox-inline-link {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  color: #c2410c;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+  font: inherit;
+}
+
+.firefox-inline-link:hover {
+  color: #9a3412;
+}
+
+/* Import action bar */
+.import-action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.toggle-paste-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: transparent;
+  border: 1px dashed var(--border);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 0 12px;
+  height: 36px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.toggle-paste-button:hover {
+  border-color: var(--accent);
+  color: var(--text);
+  background: var(--surface);
+}
+
+/* Paste JSON container */
+.paste-json-container {
+  margin-top: 12px;
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.paste-json-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.paste-json-textarea {
+  width: 100%;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  padding: 8px 10px;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  resize: vertical;
+  min-height: 70px;
+  box-sizing: border-box;
+}
+
+.paste-json-textarea:focus {
+  outline: 2px solid rgba(224, 68, 0, 0.35);
+  outline-offset: 1px;
+  border-color: var(--orange);
+}
+
+.paste-field-error {
+  color: #dc2626;
+  font-size: 11px;
+}
+
+.paste-json-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.paste-submit-btn {
+  width: auto;
+  padding: 0 16px;
+  font-size: 12px;
+  color: var(--accent);
+  background: #fff7f1;
+  border-color: #f0a17d;
+}
+
+.paste-submit-btn:not(:disabled):hover {
+  background: #fff0e6;
+  border-color: var(--orange);
+}
+
+/* Passphrase modal styles */
+.passphrase-modal {
+  max-width: 330px;
+}
+
+.modal-header-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #fff7f1;
+  color: var(--orange);
+  display: grid;
+  place-items: center;
+  margin-bottom: 12px;
+  border: 1px solid #fed7aa;
+}
+
+.passphrase-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.passphrase-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.passphrase-input {
+  width: 100%;
+  height: 36px;
+  padding: 0 34px 0 10px;
+  font-size: 13px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  box-sizing: border-box;
+}
+
+.passphrase-input:focus {
+  outline: 2px solid rgba(224, 68, 0, 0.35);
+  outline-offset: 1px;
+  border-color: var(--orange);
+}
+
+.toggle-password-visibility {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.toggle-password-visibility:hover {
+  color: var(--text);
+}
+
+.modal-field-error {
+  color: #dc2626;
+  font-size: 11.5px;
+  line-height: 1.35;
+  background: #fff5f5;
+  border: 1px solid #fecaca;
+  padding: 6px 8px;
+  border-radius: 6px;
+}
+
+/* Dark theme overrides */
+[data-theme="dark"] .firefox-notice-card {
+  background: #2a1b12;
+  border-color: #632d17;
+  color: #fdba74;
+}
+
+[data-theme="dark"] .firefox-notice-icon {
+  color: #fb923c;
+}
+
+[data-theme="dark"] .firefox-inline-link {
+  color: #f97316;
+}
+
+[data-theme="dark"] .firefox-inline-link:hover {
+  color: #fdba74;
+}
+
+[data-theme="dark"] .modal-header-icon {
+  background: #33231c;
+  border-color: #632d17;
+  color: #fb923c;
+}
+
+[data-theme="dark"] .modal-field-error {
+  background: #2d1515;
+  border-color: #5c2020;
+  color: #fca5a5;
+}
+
+[data-theme="dark"] .paste-json-container {
+  background: #201e1c;
+  border-color: #3f3b37;
+}
+
+[data-theme="dark"] .paste-json-textarea {
+  background: #181715;
+  border-color: #3f3b37;
+}
+
+[data-theme="dark"] .paste-submit-btn {
+  color: #ff9b70;
+  background: #33231c;
+  border-color: #85513b;
+}
+
+[data-theme="dark"] .paste-submit-btn:not(:disabled):hover {
+  background: #42271c;
+  border-color: #f2753d;
+}
+
+/* Tab mode full width centered layout */
+@media (min-width: 500px) {
+  html, body, #root {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    background: var(--bg);
+  }
+
+  .popup-app, .app-shell {
+    width: 460px;
+    min-height: 100vh;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.08);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     scroll-behavior: auto !important;
